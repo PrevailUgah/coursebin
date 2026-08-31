@@ -8,7 +8,7 @@ const options = [
     { value: "study-guide", label: "Study Guides" },
 ];
 
-export default function CourseFilterClient({ selected }: { selected: string | null }) {
+export default function CourseFilterClient({ selected, onChange }: { selected: string | null; onChange: (value: string | null) => void }) {
     const router = useRouter();
     const pathname = usePathname();
     return (
@@ -16,7 +16,7 @@ export default function CourseFilterClient({ selected }: { selected: string | nu
             {options.map((opt) => (
                 <button
                     key={opt.label}
-                    onClick={() => router.push(opt.value ? `${pathname}?type=${opt.value}` : pathname)}
+                    onClick={() => { onChange(opt.value); router.push(opt.value ? `${pathname}?type=${opt.value}` : pathname); }}
                     className={`text-sm px-3 py-1.5 rounded-full border ${selected === opt.value ? "bg primary text-white border-primary" : "border-border"
                         }`}
                 >
