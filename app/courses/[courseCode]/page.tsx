@@ -12,6 +12,7 @@ export default async function CoursePage({
 }) {
   const { courseCode } = await params;
   const { type } = await searchParams;
+
   const docs = await getDocumentsByCourseCode(courseCode, type);
 
   return (
