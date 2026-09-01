@@ -1,4 +1,5 @@
 import { getCourses } from "@/lib/documents";
+import SearchBar from "@/components/SearchBar";
 
 export default async function Home() {
   const courses = await getCourses();
@@ -8,14 +9,7 @@ export default async function Home() {
       <h1 className="text-3xl font-bold text-ink text-center mb-2">CourseBin</h1>
       <p className="text-muted text-center mb-8">Past questions, notes, and study guides — by course code.</p>
 
-      <form action="/courses" method="get" className="flex gap-2">
-        <input
-          name="code"
-          placeholder="Search by course code…"
-          className="flex-1 border border-border rounded-full px-4 py-2"
-        />
-        <button className="bg-primary text-white px-5 py-2 rounded-full">Search</button>
-      </form>
+      <SearchBar />
 
       <h2 className="text-sm font-semibold text-muted uppercase mt-10 mb-3">Courses</h2>
       <div className="flex gap-2 flex-wrap">
