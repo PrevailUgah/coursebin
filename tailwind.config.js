@@ -1,18 +1,117 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
+  content: [
+    "./app/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}"
+  ],
   theme: {
     extend: {
       colors: {
-        primary: "#2563eb",
-        "primary-dark": "#1d4ed8",
-        "ink": "#1e293b",
-        "muted": "#64748b",
-        "surface": "#f8fafc",
-        "border": "#e2e8f0"
-      }
+        primary: {
+          50: "#eff6ff",
+          100: "#dbeafe",
+          200: "#bfdbfe",
+          300: "#93c5fd",
+          400: "#60a5fa",
+          500: "#3b82f6",
+          600: "#2563eb",
+          700: "#1d4ed8",
+          800: "#1e40af",
+          900: "#1e3a8a",
+        },
+        secondary: {
+          50: "#f5f3ff",
+          100: "#ede9fe",
+          200: "#ddd6fe",
+          300: "#c4b5fd",
+          400: "#a78bfa",
+          500: "#8b5cf6",
+          600: "#7c3aed",
+          700: "#6d28d9",
+          800: "#5b21b6",
+          900: "#4c1d95",
+        },
+        success: {
+          50: "#f0fdf4",
+          100: "#dcfce7",
+          500: "#22c55e",
+          600: "#16a34a",
+          700: "#15803d",
+        },
+        warning: {
+          50: "#fffbeb",
+          100: "#fef3c7",
+          500: "#eab308",
+          600: "#ca8a04",
+          700: "#a16207",
+        },
+        danger: {
+          50: "#fef2f2",
+          100: "#fee2e2",
+          500: "#ef4444",
+          600: "#dc2626",
+          700: "#b91c1c",
+        },
+        ink: "#1e293b",
+        "ink-secondary": "#475569",
+        muted: "#64748b",
+        surface: "#f8fafc",
+        "surface-secondary": "#f1f5f9",
+        border: "#e2e8f0",
+        "border-secondary": "#cbd5e1",
+      },
+      fontSize: {
+        xs: ["0.75rem", { lineHeight: "1rem" }],
+        sm: ["0.875rem", { lineHeight: "1.25rem" }],
+        base: ["1rem", { lineHeight: "1.5rem" }],
+        lg: ["1.125rem", { lineHeight: "1.75rem" }],
+        xl: ["1.25rem", { lineHeight: "1.75rem" }],
+        "2xl": ["1.5rem", { lineHeight: "2rem" }],
+        "3xl": ["1.875rem", { lineHeight: "2.25rem" }],
+        "4xl": ["2.25rem", { lineHeight: "2.5rem" }],
+      },
+      fontFamily: {
+        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "monospace"],
+      },
+      spacing: {
+        xs: "0.5rem",
+        sm: "1rem",
+        md: "1.5rem",
+        lg: "2rem",
+        xl: "2.5rem",
+        "2xl": "3rem",
+      },
+      borderRadius: {
+        sm: "0.375rem",
+        md: "0.5rem",
+        lg: "0.75rem",
+        xl: "1rem",
+        "2xl": "1.5rem",
+      },
+      boxShadow: {
+        xs: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+        sm: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
+        md: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+        lg: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+        xl: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+        "2xl": "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+      },
+      animation: {
+        "fade-in": "fadeIn 0.3s ease-in",
+        "slide-up": "slideUp 0.3s ease-out",
+      },
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        slideUp: {
+          "0%": { transform: "translateY(10px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
+      },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 }
-
