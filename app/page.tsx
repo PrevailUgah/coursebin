@@ -5,9 +5,11 @@ export default async function Home() {
   const courses = await getCourses();
 
   return (
-    <div className="max-w-3xl mx-auto p-6 pt-16">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-8 sm:pt-16 pb-10">
       <h1 className="text-3xl font-bold text-ink text-center mb-2">CourseBin</h1>
-      <p className="text-muted text-center mb-8">Past questions, notes, and study guides — by course code.</p>
+      <p className="text-muted text-center mb-8">
+        Past questions, notes, and study guides — by course code.
+      </p>
 
       <SearchBar />
 

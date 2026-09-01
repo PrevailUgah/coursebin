@@ -18,9 +18,12 @@ export default function SearchBar() {
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 placeholder="Search by course code…"
-                className="flex-1 border border-border rounded-full px-4 py-2"
+                className="flex-1 min-w-0 border border-border rounded-full px-4 py-2"
             />
-            <button className="bg-primary text-white px-5 py-2 rounded-full">
+            <button
+                type="submit"
+                className="bg-primary text-white px-5 py-2 rounded-full shrink-0"
+            >
                 Search
             </button>
         </form>

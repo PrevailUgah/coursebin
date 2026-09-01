@@ -22,12 +22,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
       <body className="min-h-full flex flex-col">
-        <header className="border-b border-border px-6 py-4 flex justify-between items-center">
-          <a href="/" className="font-bold text-ink">CourseBin</a>
+        <header className="border-b border-border px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center gap-2">
+          <a href="/" className="font-bold text-ink shrink-0">CourseBin</a>
           <AuthButton />
         </header>
         <main className="flex-1">{children}</main>
       </body>
-    </html>
+    </html >
   );
 }
