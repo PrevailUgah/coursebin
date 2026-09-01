@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Search } from "lucide-react";
 
 export default function SearchBar() {
     const router = useRouter();
@@ -13,16 +14,19 @@ export default function SearchBar() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex gap-2">
-            <input
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                placeholder="Search by course code…"
-                className="flex-1 min-w-0 border border-border rounded-full px-4 py-2"
-            />
+        <form onSubmit={handleSubmit} className="flex gap-3 w-full max-w-md">
+            <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
+                <input
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    placeholder="Search by course code…"
+                    className="input-base pl-10 rounded-full border-border"
+                />
+            </div>
             <button
                 type="submit"
-                className="bg-primary text-white px-5 py-2 rounded-full shrink-0"
+                className="button-primary px-6 rounded-full shrink-0 font-semibold"
             >
                 Search
             </button>
