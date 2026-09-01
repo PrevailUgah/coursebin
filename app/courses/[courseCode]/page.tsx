@@ -1,56 +1,32 @@
-"use client";
-
-import { use, useState, useEffect } from "react";
+import { getDocumentsByCourseCode } from "@/lib/documents";
 import DocumentCard from "@/components/DocumentCard";
 import CourseFilterClient from "@/components/CourseFilterClient";
 
-type Document = {
-    id: string;
-    type: string;
-    title?: string;
-    courses?: { code?: string };
-    [key: string]: unknown;
-};
+export const dynamic = "force-dynamic";
 
-export default function CoursePage({ params }: { params: Promise<{ courseCode: string }> }) {
-    const { courseCode } = use(params);
-    const [docs, setDocs] = useState<Document[]>([]);
-    const [type, setType] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
+export default async function CoursePage({
+  params, searchParams,
+}: {
+  params: Promise<{ courseCode: string }>;
+  searchParams: Promise<{ type?: string }>;
+}) {
+  const { courseCode } = await params;
+  const { type } = await searchParams;
+  const docs = await getDocumentsByCourseCode(courseCode, type);
 
-    useEffect(() => {
-        setLoading(true);
-        fetch(`/api/documents?course=${courseCode}`)
-            .then((r) => r.json())
-            .then((data) => {
-                setDocs(Array.isArray(data) ? data : []);
-            })
-            .catch((err) => console.error("Failed to load documents:", err))
-            .finally(() => setLoading(false));
-    }, [courseCode]);
-
-    const filtered = type ? docs.filter((d) => d.type === type) : docs;
-
-    return (
-        <div className="max-w-5xl mx-auto p-6">
-            <h1 className="text-2xl font-bold text-slate-900 mb-4">{courseCode}</h1>
-
-            <CourseFilterClient selected={type} onChange={setType} />
-
-            {loading ? (
-                <div className="py-12 text-center text-slate-500">Loading documents...</div>
-            ) : filtered.length === 0 ? (
-                <div className="py-12 text-center text-slate-500 bg-slate-50 rounded-xl mt-4 border border-slate-200">
-                    No documents found.
-                </div>
-            ) : (
-                /* Responsive 1 to 3 column grid */
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-                    {filtered.map((doc) => (
-                        <DocumentCard key={doc.id} doc={doc} />
-                    ))}
-                </div>
-            )}
-        </div>
-    );
+  return (
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-2xl font-bold text-ink">{courseCode.toUpperCase()}</h1>
+      <CourseFilterClient selected={type ?? null} />
+      <div className="grid sm:grid-cols-2 gap-4 mt-6">
+        {docs.length === 0 && (
+          <div className="col-span-2 text-center py-12 text-muted">
+            <p>No resources yet for {courseCode.toUpperCase()}.</p>
+            <a href="/upload" className="text-primary font-medium">Be the first to upload →</a>
+          </div>
+        )}
+        {docs.map((doc: any) => <DocumentCard key={doc.id} doc={doc} />)}
+      </div>
+    </div>
+  );
 }

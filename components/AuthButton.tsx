@@ -47,17 +47,13 @@
 // }
 
 "use client";
-import { createClient } from
-    "@/lib/supabase/client";
-import { useEffect, useState } from
-    "react";
+import { createClient } from "@/lib/supabase/client";
+import { useEffect, useState } from "react";
 export default function AuthButton() {
     const supabase = createClient();
-    const [user, setUser] = useState<any>
-        (null);
+    const [user, setUser] = useState<any>(null);
     useEffect(() => {
-        supabase.auth.getUser().then(({ data })
-            => setUser(data.user));
+        supabase.auth.getUser().then(({ data }) => setUser(data.user));
         const { data: listener } =
             supabase.auth.onAuthStateChange((_event,
                 session) => {
@@ -69,8 +65,7 @@ export default function AuthButton() {
     if (user) {
         return (
             <button onClick={() =>
-                supabase.auth.signOut()} className="text-sm 
-text-muted">
+                supabase.auth.signOut()} className="text-sm text-muted">
                 Sign out ({user.email})
             </button>
         );
@@ -81,16 +76,14 @@ text-muted">
                 supabase.auth.signInWithOAuth({
                     provider:
                         "google"
-                })} className="text-sm border 
-rounded-full px-3 py-1.5">
+                })} className="text-sm border rounded-full px-3 py-1.5">
                 Sign in with Google
             </button>
             <button onClick={() =>
                 supabase.auth.signInWithOAuth({
                     provider:
                         "github"
-                })} className="text-sm border 
-rounded-full px-3 py-1.5">
+                })} className="text-sm border rounded-full px-3 py-1.5">
                 Sign in with GitHub
             </button>
         </div>
