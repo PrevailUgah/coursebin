@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import AuthButton from "@/components/AuthButton";
+import BottomNav from "@/components/BottomNav";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,7 +28,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AuthButton />
         </header>
         <main className="flex-1">{children}</main>
+        <BottomNav />
       </body>
-    </html >
+    </html>
   );
 }
