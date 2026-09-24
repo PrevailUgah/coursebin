@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">MU GINA Community logo</title>
+  <desc id="desc">Orange hands surrounding a code symbol on a purple background</desc>
+  <rect width="512" height="512" rx="72" fill="#30266b"/>
+  <g fill="none" stroke="#f28c4b" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M122 392c-7-63-27-112-27-168 0-37 12-74 30-104l45-73c8-13 26-16 37-5 7 7 8 18 3 28l-35 67 49-72c9-13 27-15 38-4 7 7 8 18 3 28l-46 78 57-72c10-12 27-13 38-2 8 8 8 20 2 30l-49 75 54-56c11-11 28-10 38 1 8 9 7 22-1 31l-58 70c-17 20-28 44-31 70l-8 73"/>
+    <path d="M390 392c7-63 27-112 27-168 0-37-12-74-30-104l-45-73c-8-13-26-16-37-5-7 7-8 18-3 28l35 67-49-72c-9-13-27-15-38-4-7 7-8 18-3 28l46 78-57-72c-10-12-27-13-38-2-8 8-8 20-2 30l49 75-54-56c-11-11-28-10-38 1-8 9-7 22 1 31l58 70c17 20 28 44 31 70l8 73"/>
+    <path d="m204 235-43 42 43 42M308 235l43 42-43 42M276 210l-40 135"/>
+  </g>
+</svg>

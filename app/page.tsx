@@ -2,6 +2,7 @@ import { getPopularCourses, getRecentDocuments } from "@/lib/documents";
 import { timeAgo } from "@/lib/utils";
 import SearchBar from "@/components/SearchBar";
 import QuickActions from "@/components/QuickActions";
+import HomeFooter from "@/components/HomeFooter";
 import { Code2, LineChart, GitBranch, FileText } from "lucide-react";
 
 function courseIcon(department: string) {
@@ -85,6 +86,8 @@ export default async function Home() {
           <p className="text-muted text-sm col-span-2">No uploads yet.</p>
         )}
       </div>
+
+      <HomeFooter />
     </div>
   );
 }
