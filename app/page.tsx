@@ -1,22 +1,14 @@
-import Link from "next/link";
 import { getPopularCourses, getRecentDocuments } from "@/lib/documents";
 import { timeAgo } from "@/lib/utils";
 import SearchBar from "@/components/SearchBar";
-import { Code2, LineChart, GitBranch, FileText, BookOpen, Upload, Search, FileStack } from "lucide-react";
+import QuickActions from "@/components/QuickActions";
+import { Code2, LineChart, GitBranch, FileText } from "lucide-react";
 
-function courseIcon(department: string = "") {
-  const dept = department.toLowerCase();
-  if (dept.includes("computer")) return Code2;
-  if (dept.includes("math")) return LineChart;
+function courseIcon(department: string) {
+  if (department.toLowerCase().includes("computer")) return Code2;
+  if (department.toLowerCase().includes("math")) return LineChart;
   return GitBranch;
 }
-
-const quickActions = [
-  { href: "/browse", label: "Browse Courses", icon: BookOpen },
-  { href: "/upload", label: "Upload", icon: Upload },
-  { href: "#search-bar", label: "Search", icon: Search },
-  { href: "/my-uploads", label: "My Uploads", icon: FileStack },
-];
 
 export default async function Home() {
   const [popularCourses, recentDocs] = await Promise.all([
@@ -38,20 +30,7 @@ export default async function Home() {
       </div>
 
       <h2 className="text-sm font-semibold text-muted uppercase mb-3">Quick Actions</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-12">
-        {quickActions.map(({ href, label, icon: Icon }) => (
-          <Link
-            key={label}
-            href={href}
-            className="bg-white border border-border rounded-xl p-4 flex flex-col items-center gap-2 text-center hover:border-primary transition-colors"
-          >
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Icon className="w-5 h-5 text-primary" />
-            </div>
-            <span className="text-sm font-medium text-ink">{label}</span>
-          </Link>
-        ))}
-      </div>
+      <QuickActions />
 
       <h2 className="text-lg font-bold text-ink mb-4">Popular Courses</h2>
       <div className="grid sm:grid-cols-3 gap-4 mb-12">
@@ -72,13 +51,13 @@ export default async function Home() {
               <p className="text-xs text-muted flex items-center gap-1 mb-4">
                 <FileText className="w-3.5 h-3.5" /> {c.materialCount} materials
               </p>
-              <Link
+              <a
                 href={`/courses/${c.code}`}
                 className={`block text-center text-sm font-medium py-2 rounded-lg ${highlighted ? "bg-primary text-white" : "bg-primary/10 text-primary"
                   }`}
               >
                 View
-              </Link>
+              </a>
             </div>
           );
         })}
@@ -87,7 +66,7 @@ export default async function Home() {
       <h2 className="text-lg font-bold text-ink mb-4">Recently Added</h2>
       <div className="grid sm:grid-cols-2 gap-4">
         {recentDocs.map((doc: any) => (
-          <Link
+          <a
             key={doc.id}
             href={`/courses/${doc.courses?.code}`}
             className="border border-border rounded-xl p-4 bg-white flex gap-3 hover:border-primary transition-colors"
@@ -100,7 +79,7 @@ export default async function Home() {
               <p className="font-medium text-ink text-sm truncate">{doc.title}</p>
               <p className="text-xs text-muted mt-1">{timeAgo(doc.created_at)}</p>
             </div>
-          </Link>
+          </a>
         ))}
         {recentDocs.length === 0 && (
           <p className="text-muted text-sm col-span-2">No uploads yet.</p>

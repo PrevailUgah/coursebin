@@ -13,7 +13,7 @@ export default function SearchBar() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex gap-2">
+        <form onSubmit={handleSubmit} className="flex flex-1 w-full gap-2 items-stretch min-w-0">
             <input
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
@@ -22,7 +22,7 @@ export default function SearchBar() {
             />
             <button
                 type="submit"
-                className="bg-primary text-white px-5 py-2 rounded-full shrink-0"
+                className="bg-primary text-white px-5 py-2 rounded-full shrink-0 whitespace-nowrap"
             >
                 Search
             </button>
