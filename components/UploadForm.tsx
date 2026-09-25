@@ -118,7 +118,7 @@ export default function UploadForm({ userId }: { userId: string }) {
             </div>
 
             <div>
-                [9/1/2026 9:04 AM] Ben: <label className="text-sm font-medium text-ink">File</label>
+                <label className="text-sm font-medium text-ink">File</label>
                 <input
                     type="file"
                     accept=".pdf,.jpg,.jpeg,.png,.docx,.pptx,.xlsx,.txt"

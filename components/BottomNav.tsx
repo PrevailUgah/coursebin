@@ -51,7 +51,7 @@ export default function BottomNav() {
             {signedIn ? (
                 <a href="/my-uploads" className={itemClass(pathname === "/my-uploads")}>
                     <User className="w-5 h-5" />
-                    Account
+                    My Uploads
                 </a>
             ) : (
                 <button onClick={signIn} className={itemClass(false)}>
