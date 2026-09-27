@@ -8,3 +8,7 @@ export function timeAgo(dateString: string) {
     const days = Math.floor(hours / 24);
     return `${days}d ago`;
 }
+
+export function semesterLabel(semester: number) {
+    return semester === 1 ? "1st Semester" : "2nd Semester";
+}

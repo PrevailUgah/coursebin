@@ -1,12 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 
-export async function getCourses() {
-    const supabase = await createClient();
-    const { data, error } = await supabase.from("courses").select("*").order("level").order("code");
-    if (error) throw error;
-    return data;
-}
-
 export async function getDocumentsByCourseCode(courseCode: string, type?: string) {
     const supabase = await createClient();
     let query = supabase
@@ -26,12 +19,12 @@ export async function getPopularCourses(limit = 3) {
     const supabase = await createClient();
     const { data: courses } = await supabase
         .from("courses")
-        .select("id, code, title, department");
+        .select("id, code, title, department_id, level, semester, departments(name, faculty_id)");
 
     if (!courses) return [];
 
     const withCounts = await Promise.all(
-        courses.map(async (c) => {
+        courses.map(async (c: any) => {
             const { count } = await supabase
                 .from("documents")
                 .select("id", { count: "exact", head: true })

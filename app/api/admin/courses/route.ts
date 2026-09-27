@@ -6,28 +6,25 @@ export async function POST(request: Request) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { data: profile } = await supabase
-        .from("profiles")
-        .select("is_admin")
-        .eq("id", user.id)
-        .single();
+    const { data: profile } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
+    if (!profile?.is_admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-    if (!profile?.is_admin) {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    const { departmentId, level, semester, code, title, units } = await request.json();
 
-    const body = await request.json();
-    const { code, title, department, level } = body;
-
-    if (!code || !title || !department || ![100, 200, 300].includes(level)) {
+    if (
+        !departmentId || !code || !title ||
+        ![100, 200, 300, 400].includes(level) ||
+        ![1, 2].includes(semester) ||
+        !Number.isInteger(units) || units < 1
+    ) {
         return NextResponse.json({ error: "Invalid course data." }, { status: 400 });
     }
 
-    const { error } = await supabase.from("courses").insert({ code, title, department, level });
+    const { error } = await supabase.from("courses").insert({
+        department_id: departmentId, level, semester, code, title, units,
+    });
 
-    if (error) {
-        return NextResponse.json({ error: "Could not create course." }, { status: 500 });
-    }
+    if (error) return NextResponse.json({ error: "Could not create course." }, { status: 500 });
 
     return NextResponse.json({ success: true });
 }

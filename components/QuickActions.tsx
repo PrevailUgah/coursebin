@@ -88,11 +88,11 @@ export default function QuickActions() {
             )}
 
             {isAdmin && (
-                <a href="/admin/courses" className={tileClass}>
+                <a href="/admin/faculties" className={tileClass}>
                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                         <PlusCircle className="w-5 h-5 text-primary" />
                     </div>
-                    <span className="text-sm font-medium text-ink">Add Course</span>
+                    <span className="text-sm font-medium text-ink">Admin</span>
                 </a>
             )}
         </div>

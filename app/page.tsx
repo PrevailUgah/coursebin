@@ -5,9 +5,9 @@ import SearchBar from "@/components/SearchBar";
 import QuickActions from "@/components/QuickActions";
 import { Code2, LineChart, GitBranch, FileText } from "lucide-react";
 
-function courseIcon(department: string) {
-  if (department.toLowerCase().includes("computer")) return Code2;
-  if (department.toLowerCase().includes("math")) return LineChart;
+function courseIcon(departmentName: string) {
+  if (departmentName.toLowerCase().includes("computer")) return Code2;
+  if (departmentName.toLowerCase().includes("math")) return LineChart;
   return GitBranch;
 }
 
@@ -36,13 +36,12 @@ export default async function Home() {
       <h2 className="text-lg font-bold text-ink mb-4">Popular Courses</h2>
       <div className="grid sm:grid-cols-3 gap-4 mb-12">
         {popularCourses.map((c: any, i: number) => {
-          const Icon = courseIcon(c.department);
+          const Icon = courseIcon(c.departments?.name ?? "");
           const highlighted = i === 1;
           return (
             <div
               key={c.id}
-              className={`rounded-2xl border p-5 ${highlighted ? "border-primary bg-primary/5" : "border-border bg-card"
-                }`}
+              className={`rounded-2xl border p-5 ${highlighted ? "border-primary bg-primary/5" : "border-border bg-card"}`}
             >
               <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
                 <Icon className="w-5 h-5 text-primary" />
@@ -54,8 +53,7 @@ export default async function Home() {
               </p>
               <a
                 href={`/courses/${c.code}`}
-                className={`block text-center text-sm font-medium py-2 rounded-lg ${highlighted ? "bg-primary text-white" : "bg-primary/10 text-primary"
-                  }`}
+                className={`block text-center text-sm font-medium py-2 rounded-lg ${highlighted ? "bg-primary text-white" : "bg-primary/10 text-primary"}`}
               >
                 View
               </a>
