@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export async function getCourses() {
     const supabase = await createClient();
-    const { data, error } = await supabase.from("courses").select("*").order("code");
+    const { data, error } = await supabase.from("courses").select("*").order("level").order("code");
     if (error) throw error;
     return data;
 }

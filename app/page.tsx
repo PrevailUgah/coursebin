@@ -26,7 +26,7 @@ export default async function Home() {
         </p>
       </div>
 
-      <div id="search-bar" className="bg-white border border-border rounded-2xl shadow-sm p-2 flex gap-2 mb-8 scroll-mt-20">
+      <div id="search-bar" className="bg-card border border-border rounded-2xl shadow-sm p-2 flex gap-2 mb-8 scroll-mt-20">
         <SearchBar />
       </div>
 
@@ -41,7 +41,7 @@ export default async function Home() {
           return (
             <div
               key={c.id}
-              className={`rounded-2xl border p-5 ${highlighted ? "border-primary bg-primary/5" : "border-border bg-white"
+              className={`rounded-2xl border p-5 ${highlighted ? "border-primary bg-primary/5" : "border-border bg-card"
                 }`}
             >
               <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
@@ -70,7 +70,7 @@ export default async function Home() {
           <a
             key={doc.id}
             href={`/courses/${doc.courses?.code}`}
-            className="border border-border rounded-xl p-4 bg-white flex gap-3 hover:border-primary transition-colors"
+            className="border border-border rounded-xl p-4 bg-card flex gap-3 hover:border-primary transition-colors"
           >
             <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
               <FileText className="w-4 h-4 text-primary" />

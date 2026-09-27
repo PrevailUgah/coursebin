@@ -40,7 +40,7 @@ export default function DocumentCard({ doc }: { doc: any }) {
     }
 
     return (
-        <div className="border border-border rounded-xl p-4 bg-white hover:shadow-md transition-shadow">
+        <div className="border border-border rounded-xl p-4 bg-card hover:shadow-md transition-shadow">
             <span className={`inline-block text-xs font-medium px-2 py-1 rounded-full ${typeColors[doc.type]}`}>
                 {typeLabels[doc.type]}
             </span>
@@ -48,6 +48,7 @@ export default function DocumentCard({ doc }: { doc: any }) {
             <p className="text-sm text-muted">{doc.courses?.code}</p>
 
             <div className="flex items-center gap-4 mt-3">
+
                 <a
                     href={`/api/download/${doc.id}`}
                     className="text-sm font-medium text-primary hover:text-primary-dark"
@@ -55,18 +56,16 @@ export default function DocumentCard({ doc }: { doc: any }) {
                     View document →
                 </a>
 
-                {
-                    isOwner && (
-                        <button
-                            onClick={handleDelete}
-                            disabled={deleting}
-                            className="text-sm text-red-600 hover:text-red-800 disabled:opacity-50"
-                        >
-                            {deleting ? "Deleting…" : "Delete"}
-                        </button>
-                    )
-                }
-            </div >
+                {isOwner && (
+                    <button
+                        onClick={handleDelete}
+                        disabled={deleting}
+                        className="text-sm text-red-600 hover:text-red-800 disabled:opacity-50"
+                    >
+                        {deleting ? "Deleting…" : "Delete"}
+                    </button>
+                )}
+            </div>
         </div >
     );
 }

@@ -28,7 +28,7 @@ export default function BottomNav() {
         `flex flex-col items-center gap-0.5 text-xs px-3 py-1 ${active ? "text-primary" : "text-muted"}`;
 
     return (
-        <nav className="sm:hidden fixed bottom-0 inset-x-0 bg-white border-t border-border flex justify-around items-center py-2 z-20">
+        <nav className="sm:hidden fixed bottom-0 inset-x-0 bg-card border-t border-border flex justify-around items-center py-2 z-20">
             <a href="/" className={itemClass(pathname === "/")}>
                 <Home className="w-5 h-5" />
                 Home
@@ -51,7 +51,7 @@ export default function BottomNav() {
             {signedIn ? (
                 <a href="/my-uploads" className={itemClass(pathname === "/my-uploads")}>
                     <User className="w-5 h-5" />
-                    My Uploads
+                    Account
                 </a>
             ) : (
                 <button onClick={signIn} className={itemClass(false)}>

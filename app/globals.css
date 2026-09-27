@@ -2,8 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-ink: #000000;
+  --color-muted: #52525b;
+  --color-surface: #ffffff;
+  --color-card: #ffffff;
+  --color-border: #e5e5e5;
+}
+
+.dark {
+  --color-ink: #ffffff;
+  --color-muted: #a1a1aa;
+  --color-surface: #000000;
+  --color-card: #0a0a0a;
+  --color-border: #27272a;
+}
+
 body {
-  background: theme("colors.surface");
-  color: theme("colors.ink");
+  background: var(--color-surface);
+  color: var(--color-ink);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
