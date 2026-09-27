@@ -1,5 +1,6 @@
 ﻿import Image from "next/image";
 import { getPopularCourses, getRecentDocuments } from "@/lib/documents";
+import { getFacultiesWithDepartments } from "@/lib/academic";
 import { timeAgo } from "@/lib/utils";
 import SearchBar from "@/components/SearchBar";
 import QuickActions from "@/components/QuickActions";
@@ -12,9 +13,10 @@ function courseIcon(departmentName: string) {
 }
 
 export default async function Home() {
-  const [popularCourses, recentDocs] = await Promise.all([
+  const [popularCourses, recentDocs, faculties] = await Promise.all([
     getPopularCourses(3),
     getRecentDocuments(4),
+    getFacultiesWithDepartments(),
   ]);
 
   return (
@@ -26,8 +28,8 @@ export default async function Home() {
         </p>
       </div>
 
-      <div id="search-bar" className="bg-card border border-border rounded-2xl shadow-sm p-2 flex gap-2 mb-8 scroll-mt-20">
-        <SearchBar />
+      <div id="search-bar" className="mb-8 scroll-mt-20">
+        <SearchBar faculties={faculties} />
       </div>
 
       <h2 className="text-sm font-semibold text-muted uppercase mb-3">Quick Actions</h2>
@@ -41,7 +43,8 @@ export default async function Home() {
           return (
             <div
               key={c.id}
-              className={`rounded-2xl border p-5 ${highlighted ? "border-primary bg-primary/5" : "border-border bg-card"}`}
+              className={`rounded-2xl border p-5 ${highlighted ? "border-primary bg-primary/5" : "border-border bg-card"
+                }`}
             >
               <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
                 <Icon className="w-5 h-5 text-primary" />
@@ -53,7 +56,8 @@ export default async function Home() {
               </p>
               <a
                 href={`/courses/${c.code}`}
-                className={`block text-center text-sm font-medium py-2 rounded-lg ${highlighted ? "bg-primary text-white" : "bg-primary/10 text-primary"}`}
+                className={`block text-center text-sm font-medium py-2 rounded-lg ${highlighted ? "bg-primary text-white" : "bg-primary/10 text-primary"
+                  }`}
               >
                 View
               </a>
@@ -79,14 +83,17 @@ export default async function Home() {
               <p className="text-xs text-muted mt-1">{timeAgo(doc.created_at)}</p>
             </div>
           </a>
-        ))}
-        {recentDocs.length === 0 && (
-          <p className="text-muted text-sm col-span-2">No uploads yet.</p>
-        )}
-      </div>
+        ))
+        }
+        {
+          recentDocs.length === 0 && (
+            <p className="text-muted text-sm col-span-2">No uploads yet.</p>
+          )
+        }
+      </div >
 
       {/* Footer Credit */}
-      <div className="mt-16 mb-4 border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+      < div className="mt-16 mb-4 border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between gap-6" >
         <p className="text-sm text-muted text-center sm:text-left">
           Made for{" "}
           <span className="text-red-500">growth🚀</span>{" "}
@@ -106,7 +113,7 @@ export default async function Home() {
             MU GINA Community
           </p>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
