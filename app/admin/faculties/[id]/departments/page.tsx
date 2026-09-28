@@ -8,7 +8,7 @@ export default async function AdminDepartmentsPage({ params }: { params: Promise
     const [faculty, departments] = await Promise.all([getFaculty(id), getDepartments(id)]);
 
     return (
-        <div>
+        <div className="max-w-2xl">
             <a href="/admin/faculties" className="text-sm text-primary">← Faculties</a>
             <h1 className="text-2xl font-bold text-ink mt-2 mb-4">{faculty?.name} — Departments</h1>
             <DepartmentManager facultyId={id} departments={departments} />

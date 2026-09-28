@@ -14,10 +14,16 @@ const ALLOWED_TYPES = [
 ];
 const MAX_SIZE_MB = 10;
 
-export default function UploadForm({ userId }: { userId: string }) {
+export default function UploadForm({
+    userId,
+    initialCourseCode = "",
+}: {
+    userId: string;
+    initialCourseCode?: string;
+}) {
     const router = useRouter();
     const supabase = createClient();
-    const [courseCode, setCourseCode] = useState("");
+    const [courseCode, setCourseCode] = useState(initialCourseCode);
     const [title, setTitle] = useState("");
     const [type, setType] = useState("notes");
     const [file, setFile] = useState<File | null>(null);
@@ -78,8 +84,14 @@ export default function UploadForm({ userId }: { userId: string }) {
         router.push(`/courses/${courseCode.toUpperCase()}`);
     }
 
+    const inputClass =
+        "w-full border border-border rounded-lg px-3 py-2 mt-1 bg-card text-ink";
+
     return (
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto px-4 sm:px-6 py-6 space-y-4">
+        <form
+            onSubmit={handleSubmit}
+            className="max-w-lg mx-4 sm:mx-auto my-6 md:my-10 p-5 sm:p-6 space-y-4 bg-card border border-border rounded-2xl shadow-sm"
+        >
             <h1 className="text-2xl font-bold text-ink">Upload a resource</h1>
 
             <div>
@@ -87,9 +99,9 @@ export default function UploadForm({ userId }: { userId: string }) {
                 <input
                     value={courseCode}
                     onChange={(e) => setCourseCode(e.target.value)}
-                    placeholder="CSC203"
+                    placeholder="CSC 101"
                     required
-                    className="w-full border border-border rounded-lg px-3 py-2 mt-1"
+                    className={inputClass}
                 />
             </div>
 
@@ -100,17 +112,13 @@ export default function UploadForm({ userId }: { userId: string }) {
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="2023 Past Questions"
                     required
-                    className="w-full border border-border rounded-lg px-3 py-2 mt-1"
+                    className={inputClass}
                 />
             </div>
 
             <div>
                 <label className="text-sm font-medium text-ink">Type</label>
-                <select
-                    value={type}
-                    onChange={(e) => setType(e.target.value)}
-                    className="w-full border border-border rounded-lg px-3 py-2 mt-1"
-                >
+                <select value={type} onChange={(e) => setType(e.target.value)} className={inputClass}>
                     <option value="past-question">Past Question</option>
                     <option value="notes">Notes</option>
                     <option value="study-guide">Study Guide</option>
@@ -124,7 +132,7 @@ export default function UploadForm({ userId }: { userId: string }) {
                     accept=".pdf,.jpg,.jpeg,.png,.docx,.pptx,.xlsx,.txt"
                     onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                     required
-                    className="w-full text-sm mt-1"
+                    className="w-full text-sm mt-1 text-ink"
                 />
             </div>
 

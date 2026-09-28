@@ -1,99 +1,62 @@
 "use client";
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
 import { BookOpen, Upload, Search, FileStack, PlusCircle } from "lucide-react";
+import { useAuth, signInWithGoogle } from "@/lib/auth-client";
 
 export default function QuickActions() {
-    const supabase = createClient();
-    const [signedIn, setSignedIn] = useState(false);
-    const [isAdmin, setIsAdmin] = useState(false);
-
-    useEffect(() => {
-        supabase.auth.getUser().then(async ({ data }) => {
-            setSignedIn(!!data.user);
-            if (data.user) {
-                const { data: profile } = await supabase
-                    .from("profiles")
-                    .select("is_admin")
-                    .eq("id", data.user.id)
-                    .single();
-                setIsAdmin(!!profile?.is_admin);
-            }
-        });
-        const { data: listener } = supabase.auth.onAuthStateChange((_e, session) => {
-            setSignedIn(!!session);
-            if (!session) setIsAdmin(false);
-        });
-        return () => listener.subscription.unsubscribe();
-    }, []);
-
-    function signIn() {
-        supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: { redirectTo: `${window.location.origin}/auth/callback` },
-        });
-    }
+    const { signedIn, isAdmin } = useAuth();
 
     const tileClass =
         "bg-card border border-border rounded-xl p-4 flex flex-col items-center gap-2 text-center hover:border-primary transition-colors w-full";
+    const iconWrap = "w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center";
+
+    function openSearch() {
+        window.dispatchEvent(new Event("coursebin:focus-search"));
+    }
 
     return (
-        <div className={`grid grid-cols-2 ${isAdmin ? "sm:grid-cols-5" : "sm:grid-cols-4"} gap-3 mb-12`}>
-            <a href="/browse" className={tileClass}>
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <BookOpen className="w-5 h-5 text-primary" />
-                </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <Link href="/browse" className={tileClass}>
+                <div className={iconWrap}><BookOpen className="w-5 h-5 text-primary" /></div>
                 <span className="text-sm font-medium text-ink">Browse Courses</span>
-            </a>
+            </Link>
 
             {signedIn ? (
-                <a href="/upload" className={tileClass}>
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Upload className="w-5 h-5 text-primary" />
-                    </div>
+                <Link href="/upload" className={tileClass}>
+                    <div className={iconWrap}><Upload className="w-5 h-5 text-primary" /></div>
                     <span className="text-sm font-medium text-ink">Upload</span>
-                </a>
+                </Link>
             ) : (
-                <button onClick={signIn} className={tileClass}>
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Upload className="w-5 h-5 text-primary" />
-                    </div>
+                <button onClick={signInWithGoogle} className={tileClass}>
+                    <div className={iconWrap}><Upload className="w-5 h-5 text-primary" /></div>
                     <span className="text-sm font-medium text-ink">Upload</span>
                     <span className="text-[11px] text-muted -mt-1">Sign in required</span>
                 </button>
             )}
 
-            <a href="#search-bar" className={tileClass}>
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Search className="w-5 h-5 text-primary" />
-                </div>
+            <button onClick={openSearch} className={tileClass}>
+                <div className={iconWrap}><Search className="w-5 h-5 text-primary" /></div>
                 <span className="text-sm font-medium text-ink">Search</span>
-            </a>
+            </button>
 
             {signedIn ? (
-                <a href="/my-uploads" className={tileClass}>
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <FileStack className="w-5 h-5 text-primary" />
-                    </div>
+                <Link href="/my-uploads" className={tileClass}>
+                    <div className={iconWrap}><FileStack className="w-5 h-5 text-primary" /></div>
                     <span className="text-sm font-medium text-ink">My Uploads</span>
-                </a>
+                </Link>
             ) : (
-                <button onClick={signIn} className={tileClass}>
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <FileStack className="w-5 h-5 text-primary" />
-                    </div>
+                <button onClick={signInWithGoogle} className={tileClass}>
+                    <div className={iconWrap}><FileStack className="w-5 h-5 text-primary" /></div>
                     <span className="text-sm font-medium text-ink">My Uploads</span>
                     <span className="text-[11px] text-muted -mt-1">Sign in required</span>
                 </button>
             )}
 
             {isAdmin && (
-                <a href="/admin/faculties" className={tileClass}>
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <PlusCircle className="w-5 h-5 text-primary" />
-                    </div>
+                <Link href="/admin/faculties" className={`${tileClass} md:hidden`}>
+                    <div className={iconWrap}><PlusCircle className="w-5 h-5 text-primary" /></div>
                     <span className="text-sm font-medium text-ink">Admin</span>
-                </a>
+                </Link>
             )}
         </div>
     );

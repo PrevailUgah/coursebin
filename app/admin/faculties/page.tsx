@@ -5,5 +5,9 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminFacultiesPage() {
     const faculties = await getFaculties();
-    return <FacultyManager faculties={faculties} />;
+    return (
+        <div className="max-w-2xl">
+            <FacultyManager faculties={faculties} />
+        </div>
+    );
 }

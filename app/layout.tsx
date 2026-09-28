@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import AuthButton from "@/components/AuthButton";
-import BottomNav from "@/components/BottomNav";
-// import Footer from "@/components/Footer";
-import ThemeToggle from "@/components/ThemeToggle";
+import AppShell from "@/components/AppShell";
+import { getFacultiesWithDepartments } from "@/lib/academic";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,7 +19,14 @@ export const metadata: Metadata = {
   description: "Past questions, notes, and study guides — by course code.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  let faculties: any[] = [];
+  try {
+    faculties = await getFacultiesWithDepartments();
+  } catch {
+    faculties = [];
+  }
+
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
       <head>
@@ -37,17 +42,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col">
-        <header className="border-b border-border px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center gap-2">
-          <a href="/" className="font-bold text-ink shrink-0">CourseBin</a>
-          <div className="flex items-center gap-3">
-            <ThemeToggle />
-            <AuthButton />
-          </div>
-        </header>
-        <main className="flex-1">{children}</main>
-        {/* <Footer /> */}
-        <BottomNav />
+      <body className="min-h-full">
+        <AppShell faculties={faculties}>{children}</AppShell>
       </body>
     </html>
   );
