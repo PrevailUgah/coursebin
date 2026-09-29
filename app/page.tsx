@@ -1,150 +1,127 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+﻿import Image from "next/image";
+import Link from "next/link";
+import { getPopularCourses, getRecentDocuments } from "@/lib/documents";
+import { getFacultiesWithDepartments } from "@/lib/academic";
+import { timeAgo } from "@/lib/utils";
+import SearchBar from "@/components/SearchBar";
+import QuickActions from "@/components/QuickActions";
+import HeroMarquee from "@/components/HeroMarquee";
+import EdgeLight from "@/components/EdgeLight";
+import { Code2, LineChart, GitBranch, FileText } from "lucide-react";
 
-:root {
-  --color-ink: #000000;
-  --color-muted: #52525b;
-  --color-surface: #ffffff;
-  --color-card: #ffffff;
-  --color-border: #e5e5e5;
-
-  --hero-a: #c2410c;
-  --hero-b: #6b21a8;
-  --edge-stops: #38bdf8 0deg, #7c3aed 30deg, #ea580c 62deg, #ea580c 108deg,
-    #be185d 132deg, #6b21a8 158deg, #4c1d95 195deg, #5b21b6 250deg,
-    #38bdf8 335deg, #38bdf8 360deg;
+function courseIcon(departmentName: string) {
+  if (departmentName.toLowerCase().includes("computer")) return Code2;
+  if (departmentName.toLowerCase().includes("math")) return LineChart;
+  return GitBranch;
 }
 
-.dark {
-  --color-ink: #ffffff;
-  --color-muted: #a1a1aa;
-  --color-surface: #000000;
-  --color-card: #0a0a0a;
-  --color-border: #27272a;
+export default async function Home() {
+  const [popularCourses, recentDocs, faculties] = await Promise.all([
+    getPopularCourses(6),
+    getRecentDocuments(6),
+    getFacultiesWithDepartments(),
+  ]);
 
-  --hero-a: #fb923c;
-  --hero-b: #c084fc;
-}
+  return (
+    <>
+      <EdgeLight />
+      <div className="relative z-0 px-4 sm:px-6 lg:px-8 py-6 max-w-[1400px] mx-auto">
+        <HeroMarquee />
 
-body {
-  background: var(--color-surface);
-  color: var(--color-ink);
-  font-family: Arial, Helvetica, sans-serif;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
+        {/* Mobile only — desktop/tablet use the search in the top bar */}
+        <div id="search-bar" className="md:hidden mb-6 scroll-mt-20">
+          <SearchBar faculties={faculties} />
+        </div>
 
-/* Greeting marquee: scrolls left, colour cycles orange <-> purple */
-.hero-viewport {
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
-}
+        <div className="grid lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8 min-w-0">
+            <section>
+              <h2 className="text-sm font-semibold text-muted uppercase mb-3">Quick Actions</h2>
+              <QuickActions />
+            </section>
 
-.hero-track {
-  display: flex;
-  width: max-content;
-  animation: hero-move 20s linear infinite;
-}
+            <section>
+              <h2 className="text-lg font-bold text-ink mb-4">Popular Courses</h2>
+              <div className="grid sm:grid-cols-2 2xl:grid-cols-3 gap-4">
+                {popularCourses.map((c: any) => {
+                  const Icon = courseIcon(c.departments?.name ?? "");
+                  return (
+                    <div key={c.id} className="rounded-2xl border border-border bg-card p-5">
+                      <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                        <Icon className="w-5 h-5 text-primary" />
+                      </div>
+                      <h3 className="font-bold text-ink">{c.code}</h3>
+                      <p className="text-sm text-muted mb-2">{c.title}</p>
+                      <p className="text-xs text-muted flex items-center gap-1 mb-4">
+                        <FileText className="w-3.5 h-3.5" /> {c.materialCount} materials
+                      </p>
+                      <Link
+                        href={`/courses/${c.code}`}
+                        className="block text-center text-sm font-medium py-2 rounded-lg bg-primary/10 text-primary"
+                      >
+                        View
+                      </Link>
+                    </div>
+                  );
+                })}
+                {popularCourses.length === 0 && (
+                  <p className="text-muted text-sm col-span-full">No courses yet.</p>
+                )}
+              </div>
+            </section>
+          </div>
 
-.hero-marquee:hover .hero-track {
-  animation-play-state: paused;
-}
+          <aside className="min-w-0">
+            <div className="bg-card border border-border rounded-2xl p-4 lg:sticky lg:top-20">
+              <h2 className="text-lg font-bold text-ink mb-3">Recently Added</h2>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-1 gap-2">
+                {recentDocs.map((doc: any) => (
+                  <Link
+                    key={doc.id}
+                    href={`/courses/${doc.courses?.code}`}
+                    className="border border-border rounded-xl p-3 flex gap-3 hover:border-primary transition-colors"
+                  >
+                    <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <FileText className="w-4 h-4 text-primary" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs text-muted">{doc.courses?.code}</p>
+                      <p className="font-medium text-ink text-sm truncate">{doc.title}</p>
+                      <p className="text-xs text-muted mt-0.5">{timeAgo(doc.created_at)}</p>
+                    </div>
+                  </Link>
+                ))}
+                {recentDocs.length === 0 && (
+                  <p className="text-muted text-sm sm:col-span-2 lg:col-span-1">No uploads yet.</p>
+                )}
+              </div>
+            </div>
+          </aside>
+        </div>
 
-.hero-text {
-  flex: none;
-  padding: 1.1rem 3rem 1.1rem 0;
-  white-space: nowrap;
-  font-weight: 700;
-  font-size: 1.05rem;
-  animation: hero-hue 6s ease-in-out infinite alternate;
-}
+        {/* Footer Credit */}
+        <div className="mt-16 mb-4 border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <p className="text-sm text-muted text-center sm:text-left">
+            Made for{" "}
+            <span className="text-red-500">growth🚀</span>{" "}
+            by{" "}
+            <span className="font-semibold text-ink">Dev Prevail Ugah</span>
+          </p>
 
-@keyframes hero-move {
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes hero-hue {
-  from {
-    color: var(--hero-a);
-  }
-
-  to {
-    color: var(--hero-b);
-  }
-}
-
-/* Edge lighting: a light trail flowing clockwise around the screen edge */
-.edge-light {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 45;
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-}
-
-.edge-line {
-  padding: 3px;
-}
-
-.edge-halo {
-  padding: 14px;
-  opacity: 0.12;
-}
-
-.dark .edge-halo {
-  opacity: 0.16;
-}
-
-.edge-light::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 250vmax;
-  height: 250vmax;
-  margin: -125vmax 0 0 -125vmax;
-  background: conic-gradient(var(--edge-stops));
-  animation: edge-spin 8s linear infinite;
-  will-change: transform;
-}
-
-@keyframes edge-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .edge-light::before {
-    animation: none;
-  }
-
-  .hero-viewport {
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
-
-  .hero-track {
-    animation: none;
-    width: auto;
-    flex-wrap: wrap;
-  }
-
-  .hero-text {
-    animation: none;
-    color: var(--hero-a);
-    white-space: normal;
-    padding: 1rem;
-  }
-
-  .hero-text:not(:first-child) {
-    display: none;
-  }
+          <div className="flex flex-col items-center gap-2">
+            <Image
+              src="/mugina-logo.jpg"
+              alt="MU GINA Community Logo"
+              width={72}
+              height={72}
+              className="rounded-xl shadow-sm"
+            />
+            <p className="text-xs font-semibold text-muted tracking-wide uppercase">
+              MU GINA Community
+            </p>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
