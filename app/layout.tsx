@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from 'next/script';
 import { Geist, Geist_Mono } from "next/font/google";
 import AppShell from "@/components/AppShell";
 import { getFacultiesWithDepartments } from "@/lib/academic";
@@ -34,7 +35,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       suppressHydrationWarning
     >
       <head>
-        <script
+        <Script
           dangerouslySetInnerHTML={{
             __html: `
               try {
