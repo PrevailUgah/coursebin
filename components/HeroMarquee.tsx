@@ -1,5 +1,5 @@
-const message =
-    "Hello 👋 Welcome to CourseBin — find past questions, notes, and study guides for your courses.";
+﻿const message =
+    "Hello 👋 Welcome to CourseBin — get updates and materials for your courses.";
 
 export default function HeroMarquee() {
     return (
