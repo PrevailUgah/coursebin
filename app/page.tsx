@@ -6,7 +6,7 @@ import { timeAgo } from "@/lib/utils";
 import SearchBar from "@/components/SearchBar";
 import QuickActions from "@/components/QuickActions";
 import HeroMarquee from "@/components/HeroMarquee";
-import EdgeLight from "@/components/EdgeLight";
+// import EdgeLight from "@/components/EdgeLight";
 import { Code2, LineChart, GitBranch, FileText } from "lucide-react";
 
 function courseIcon(departmentName: string) {
