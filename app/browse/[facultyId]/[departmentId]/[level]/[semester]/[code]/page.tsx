@@ -16,10 +16,10 @@ export default async function CourseDetailPage({
   params, searchParams,
 }: {
   params: Promise<{ facultyId: string; departmentId: string; level: string; semester: string; code: string }>;
-  searchParams: Promise<{ type?: string }>;
+  searchParams: Promise<{ type?: string; tab?: string }>;
 }) {
   const { facultyId, departmentId, level, semester, code } = await params;
-  const { type } = await searchParams;
+  const { type, tab } = await searchParams;
   const course = await getCourseByCode(code);
   const [docs, updates] = await Promise.all([
     getDocumentsByCourseCode(code, type),
@@ -28,6 +28,7 @@ export default async function CourseDetailPage({
 
   const displayCode = course?.code ?? code.toUpperCase();
   const chip = "text-xs font-medium px-2.5 py-1 rounded-full bg-primary/10 text-primary";
+  const otherDepartments = (course?.departments ?? []).filter((d: any) => d.id !== departmentId);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6">
@@ -45,6 +46,11 @@ export default async function CourseDetailPage({
             <span className={chip}>{course?.units} Units</span>
             <span className={chip}>{docs.length} {docs.length === 1 ? "resource" : "resources"}</span>
           </div>
+          {otherDepartments.length > 0 && (
+            <p className="text-xs text-muted mt-2">
+              Also offered by: {otherDepartments.map((d: any) => d.name).join(", ")}
+            </p>
+          )}
         </div>
         <div className="flex flex-col items-end gap-2">
           {course && <EnrollButton courseId={course.id} />}
@@ -54,11 +60,14 @@ export default async function CourseDetailPage({
 
       <div className="mt-4">
         <CourseTabs
+          defaultTab={tab === "updates" ? "updates" : "materials"}
           materials={
             <div>
               <CourseFilterClient selected={type ?? null} />
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4 mt-4">
-                {docs.length === 0 && <div className="col-span-full text-center py-12 text-muted"><p>No resources yet for {displayCode}.</p></div>}
+                {docs.length === 0 && (
+                  <div className="col-span-full text-center py-12 text-muted"><p>No resources yet for {displayCode}.</p></div>
+                )}
                 {docs.map((doc: any) => <DocumentCard key={doc.id} doc={doc} />)}
               </div>
             </div>

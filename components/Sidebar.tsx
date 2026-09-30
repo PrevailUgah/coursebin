@@ -19,7 +19,7 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean | 
   const items: NavItem[] = [
     { href: "/", label: "Dashboard", icon: LayoutDashboard, requiresAuth: false, active: pathname === "/" },
     { href: "/browse", label: "Browse", icon: BookOpen, requiresAuth: false, active: pathname.startsWith("/browse") },
-    { href: "/my-courses", label: "My Courses", icon: ListChecks, requiresAuth: true, active: pathname.startsWith("/my-courses") },
+    { href: "/enrolled-courses", label: "My Courses", icon: ListChecks, requiresAuth: true, active: pathname.startsWith("/enrolled-courses") },
     { href: "/upload", label: "Upload", icon: Upload, requiresAuth: true, active: pathname.startsWith("/upload") },
     { href: "/my-uploads", label: "My Uploads", icon: FileStack, requiresAuth: true, active: pathname.startsWith("/my-uploads") },
   ];

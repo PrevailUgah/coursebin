@@ -13,14 +13,17 @@ export default function NotificationsBell() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (!userId) { setItems([]); return; }
+    if (!userId) {
+      setItems([]);
+      return;
+    }
     const supabase = createClient();
     supabase
       .from("notifications")
-      .select("id, kind, title, created_at, read_at, courses(code)")
+      .select("id, kind, title, body, created_at, read_at, courses(code)")
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
-      .limit(15)
+      .limit(20)
       .then(({ data }) => setItems(data ?? []));
   }, [userId]);
 
@@ -62,27 +65,42 @@ export default function NotificationsBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-80 max-w-[90vw] bg-card border border-border rounded-xl shadow-lg z-40">
-          <p className="px-4 py-3 text-sm font-semibold text-ink border-b border-border">Updates from your courses</p>
-          <div className="max-h-80 overflow-y-auto divide-y divide-border">
-            {items.length === 0 && <p className="px-4 py-6 text-sm text-muted text-center">Enroll in courses to get notified about new materials and updates.</p>}
-            {items.map((n) => {
-              const Icon = n.kind === "material" ? FileText : Megaphone;
-              return (
-                <Link key={n.id} href={`/courses/${n.courses?.code}`} onClick={() => setOpen(false)} className="flex gap-3 px-4 py-3 hover:bg-primary/5">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4 text-primary" />
+        <>
+          <div className="fixed inset-0 bg-black/30 z-30 sm:hidden" onClick={() => setOpen(false)} />
+          <div className="fixed sm:absolute inset-x-3 sm:inset-x-auto sm:right-0 top-16 sm:top-auto sm:mt-2 w-auto sm:w-80 sm:max-w-[90vw] max-h-[75vh] sm:max-h-80 overflow-y-auto bg-card border border-border rounded-xl shadow-lg z-40">
+            <p className="px-4 py-3 text-sm font-semibold text-ink border-b border-border sticky top-0 bg-card">Notifications</p>
+            <div className="divide-y divide-border">
+              {items.length === 0 && (
+                <p className="px-4 py-6 text-sm text-muted text-center">Enroll in courses to get notified about new materials and updates.</p>
+              )}
+              {items.map((n) => {
+                const Icon = n.kind === "material" ? FileText : Megaphone;
+                const content = (
+                  <div className="flex gap-3 px-4 py-3 hover:bg-primary/5">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <Icon className="w-4 h-4 text-primary" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs text-muted">
+                        {n.kind === "news" ? "Announcement" : `${n.courses?.code} · ${n.kind === "material" ? "New material" : "Course update"}`}
+                      </p>
+                      <p className={`text-sm truncate ${!n.read_at ? "font-semibold text-ink" : "text-ink"}`}>{n.title}</p>
+                      {n.body && <p className="text-xs text-muted mt-0.5 line-clamp-2">{n.body}</p>}
+                      <p className="text-xs text-muted mt-0.5">{timeAgo(n.created_at)}</p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-xs text-muted">{n.courses?.code} · {n.kind === "material" ? "New material" : "Course update"}</p>
-                    <p className={`text-sm truncate ${!n.read_at ? "font-semibold text-ink" : "text-ink"}`}>{n.title}</p>
-                    <p className="text-xs text-muted">{timeAgo(n.created_at)}</p>
-                  </div>
-                </Link>
-              );
-            })}
+                );
+                return n.kind === "news" ? (
+                  <div key={n.id}>{content}</div>
+                ) : (
+                  <Link key={n.id} href={`/courses/${n.courses?.code}`} onClick={() => setOpen(false)}>
+                    {content}
+                  </Link>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
