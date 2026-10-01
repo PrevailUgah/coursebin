@@ -14,13 +14,13 @@ interface NotificationItem {
   body?: string;
   created_at: string;
   read_at?: string | null;
-  courses?: { code: string } | null;
+  courses?: { code: string } | { code: string }[] | null;
 }
 
 export default function NotificationsBell() {
   const { signedIn, userId } = useAuth();
-  const ref = useRef<HTMLDivElement>(null);
-  const [items, setItems] = useState<NotificationItem[]>([]);
+  const ref = useRef(null);
+  const [items, setItems] = useState([]);
   const [open, setOpen] = useState(false);
 
   const playNotificationSound = () => {
@@ -32,6 +32,13 @@ export default function NotificationsBell() {
     } catch (e) {
       console.error("Audio playback error:", e);
     }
+  };
+
+  const getCourseCode = (courses: NotificationItem["courses"]) => {
+    if (Array.isArray(courses)) {
+      return courses[0]?.code ?? null;
+    }
+    return courses?.code ?? null;
   };
 
   useEffect(() => {
@@ -49,7 +56,9 @@ export default function NotificationsBell() {
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .limit(20)
-      .then(({ data }) => setItems((data as NotificationItem[]) ?? []));
+      .then(({ data }) =>
+        setItems((data as unknown as NotificationItem[]) ?? [])
+      );
 
     // 2. Realtime Subscription for New Notifications
     const channel = supabase
@@ -72,7 +81,10 @@ export default function NotificationsBell() {
             .single();
 
           if (newNotif) {
-            setItems((prev) => [newNotif as NotificationItem, ...prev]);
+            setItems((prev) => [
+              newNotif as unknown as NotificationItem,
+              ...prev,
+            ]);
           }
         }
       )
@@ -121,87 +133,57 @@ export default function NotificationsBell() {
   const unread = items.filter((i) => !i.read_at).length;
 
   return (
-    <div ref={ref} className="relative shrink-0">
-      <button
-        onClick={toggle}
-        aria-label="Notifications"
-        className="relative w-8 h-8 flex items-center justify-center rounded-full border border-border text-ink hover:bg-primary/5 transition-colors"
-      >
-        <Bell className="w-4 h-4" />
-        {unread > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[10px] font-semibold flex items-center justify-center">
-            {unread}
-          </span>
-        )}
-      </button>
+            {unread > 0 && (
 
-      {open && (
-        <>
-          <div
-            className="fixed inset-0 bg-black/30 z-30 sm:hidden"
-            onClick={() => setOpen(false)}
-          />
-          <div className="fixed sm:absolute inset-x-3 sm:inset-x-auto sm:right-0 top-16 sm:top-auto sm:mt-2 w-auto sm:w-80 sm:max-w-[90vw] max-h-[75vh] sm:max-h-80 overflow-y-auto bg-card border border-border rounded-xl shadow-lg z-40">
-            <p className="px-4 py-3 text-sm font-semibold text-ink border-b border-border sticky top-0 bg-card">
-              Notifications
-            </p>
-            <div className="divide-y divide-border">
-              {items.length === 0 && (
-                <p className="px-4 py-6 text-sm text-muted text-center">
-                  Enroll in courses to get notified about new materials and updates.
-                </p>
-              )}
-              {items.map((n) => {
-                const Icon = n.kind === "material" ? FileText : Megaphone;
-                const content = (
-                  <div className="flex gap-3 px-4 py-3 hover:bg-primary/5 transition-colors">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <Icon className="w-4 h-4 text-primary" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-xs text-muted">
-                        {n.kind === "news"
-                          ? "Announcement"
-                          : `${n.courses?.code ?? "Course"} · ${
-                              n.kind === "material"
-                                ? "New material"
-                                : "Course update"
-                            }`}
-                      </p>
-                      <p
-                        className={`text-sm truncate ${
-                          !n.read_at ? "font-semibold text-ink" : "text-ink"
-                        }`}
-                      >
-                        {n.title}
-                      </p>
-                      {n.body && (
-                        <p className="text-xs text-muted mt-0.5 line-clamp-2">
-                          {n.body}
-                        </p>
-                      )}
-                      <p className="text-xs text-muted mt-0.5">
-                        {timeAgo(n.created_at)}
-                      </p>
-                    </div>
-                  </div>
-                );
-                return n.kind === "news" ? (
-                  <div key={n.id}>{content}</div>
-                ) : (
-                  <Link
-                    key={n.id}
-                    href={`/courses/${n.courses?.code ?? ""}`}
-                    onClick={() => setOpen(false)}
-                  >
-                    {content}
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-  );
+    {unread}
+    )}
+
+    {open && (
+    <>
+
+    setOpen(false)}
+    />
+
+    Notifications
+
+    {items.length === 0 && (
+
+    Enroll in courses to get notified about new materials and updates.
+
+    )}
+    {items.map((n) => {
+    const Icon = n.kind === "material" ? FileText : Megaphone;
+    const courseCode = getCourseCode(n.courses);
+    const content = (
+
+    {n.kind === "news"
+    ? "Announcement"
+    : \({courseCode ?? "Course"} ·\){ n.kind === "material" ? "New material" : "Course update" }}
+
+    {n.title}
+
+    {n.body && (
+
+    {n.body}
+
+    )}
+
+    {timeAgo(n.created_at)}
+
+    );
+    return n.kind === "news" ? (
+
+    {content}
+
+    ) : (
+    setOpen(false)}
+    >
+    {content}
+
+    );
+    })}
+
+    )}
+
+ );
 }
