@@ -16,7 +16,13 @@ export async function getMyEnrollments(userId: string) {
         .select("departments(name)")
         .eq("course_id", e.course_id)
         .limit(1);
-      return { ...e, departmentName: links?.[0]?.departments?.name ?? "" };
+
+      const deptData = links?.[0]?.departments;
+      const departmentName = Array.isArray(deptData)
+        ? deptData[0]?.name
+        : (deptData as any)?.name;
+
+      return { ...e, departmentName: departmentName ?? "" };
     })
   );
   return withDepts;
