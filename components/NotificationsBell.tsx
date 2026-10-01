@@ -19,11 +19,14 @@ interface NotificationItem {
 
 export default function NotificationsBell() {
   const { signedIn, userId } = useAuth();
-  const ref = useRef(null);
-  const [items, setItems] = useState([]);
+  const ref = useRef<HTMLDivElement>(null);
+  const [items, setItems] = useState<NotificationItem[]>([]);
   const [open, setOpen] = useState(false);
 
   const playNotificationSound = () => {
+    // Guard against execution during server-side pre-rendering
+    if (typeof window === "undefined" || typeof Audio === "undefined") return;
+
     try {
       const audio = new Audio("/sounds/notification.mp3");
       audio.play().catch((err) => {
@@ -97,11 +100,13 @@ export default function NotificationsBell() {
 
   useEffect(() => {
     if (!open) return;
+
     function onDown(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         setOpen(false);
       }
     }
+
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
   }, [open]);
@@ -109,8 +114,10 @@ export default function NotificationsBell() {
   async function toggle() {
     const next = !open;
     setOpen(next);
+
     if (next && userId) {
       const unreadIds = items.filter((i) => !i.read_at).map((i) => i.id);
+
       if (unreadIds.length > 0) {
         setItems((prev) =>
           prev.map((i) =>
@@ -119,6 +126,7 @@ export default function NotificationsBell() {
               : i
           )
         );
+
         const supabase = createClient();
         await supabase
           .from("notifications")
@@ -133,57 +141,93 @@ export default function NotificationsBell() {
   const unread = items.filter((i) => !i.read_at).length;
 
   return (
-            {unread > 0 && (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={toggle}
+        className="relative rounded-full p-2 hover:bg-muted"
+        aria-label="Notifications"
+      >
+        <Bell className="h-5 w-5" />
+        {unread > 0 && (
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-medium text-destructive-foreground">
+            {unread}
+          </span>
+        )}
+      </button>
 
-    {unread}
-    )}
+      {open && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 z-40"
+            onClick={() => setOpen(false)}
+          />
 
-    {open && (
-    <>
+          {/* Dropdown */}
+          <div className="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-lg border bg-background shadow-lg">
+            <div className="border-b px-4 py-3 font-medium">
+              Notifications
+            </div>
 
-    setOpen(false)}
-    />
+            <div className="max-h-96 overflow-y-auto">
+              {items.length === 0 && (
+                <p className="px-4 py-6 text-center text-sm text-muted-foreground">
+                  Enroll in courses to get notified about new materials and
+                  updates.
+                </p>
+              )}
 
-    Notifications
+              {items.map((n) => {
+                const Icon = n.kind === "material" ? FileText : Megaphone;
+                const courseCode = getCourseCode(n.courses);
 
-    {items.length === 0 && (
+                const content = (
+                  <div className="flex gap-3 px-4 py-3 hover:bg-muted/50">
+                    <div className="mt-0.5 shrink-0">
+                      <Icon className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs text-muted-foreground">
+                        {n.kind === "news"
+                          ? "Announcement"
+                          : `${courseCode ?? "Course"} · ${
+                              n.kind === "material"
+                                ? "New material"
+                                : "Course update"
+                            }`}
+                      </p>
+                      <p className="mt-0.5 text-sm font-medium leading-snug">
+                        {n.title}
+                      </p>
+                      {n.body && (
+                        <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+                          {n.body}
+                        </p>
+                      )}
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {timeAgo(n.created_at)}
+                      </p>
+                    </div>
+                  </div>
+                );
 
-    Enroll in courses to get notified about new materials and updates.
-
-    )}
-    {items.map((n) => {
-    const Icon = n.kind === "material" ? FileText : Megaphone;
-    const courseCode = getCourseCode(n.courses);
-    const content = (
-
-    {n.kind === "news"
-    ? "Announcement"
-    : \({courseCode ?? "Course"} ·\){ n.kind === "material" ? "New material" : "Course update" }}
-
-    {n.title}
-
-    {n.body && (
-
-    {n.body}
-
-    )}
-
-    {timeAgo(n.created_at)}
-
-    );
-    return n.kind === "news" ? (
-
-    {content}
-
-    ) : (
-    setOpen(false)}
-    >
-    {content}
-
-    );
-    })}
-
-    )}
-
- );
+                return n.kind === "news" ? (
+                  <div key={n.id}>{content}</div>
+                ) : (
+                  <Link
+                    key={n.id}
+                    href={courseCode ? `/courses/${courseCode}` : "#"}
+                    onClick={() => setOpen(false)}
+                  >
+                    {content}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
 }
