@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -32,14 +33,17 @@ export default function UploadForm({
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const inputClass = "w-full border border-border rounded-lg px-3 py-2 mt-1 bg-card text-ink";
+  const inputClass =
+    "w-full border border-border rounded-lg px-3 py-2 mt-1 bg-card text-ink";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!courseId) return setError("Choose a course from the list.");
     if (!file) return setError("Choose a file.");
     if (!ALLOWED_TYPES.includes(file.type)) {
-      return setError("Only PDF, Word, PowerPoint, Excel, TXT, JPG, or PNG files allowed.");
+      return setError(
+        "Only PDF, Word, PowerPoint, Excel, TXT, JPG, or PNG files allowed."
+      );
     }
     if (file.size > MAX_SIZE_MB * 1024 * 1024) {
       return setError(`File must be under ${MAX_SIZE_MB}MB.`);
@@ -49,7 +53,9 @@ export default function UploadForm({
     setError(null);
 
     const filePath = `${userId}/${courseId}/${crypto.randomUUID()}-${file.name}`;
-    const { error: uploadErr } = await supabase.storage.from("documents").upload(filePath, file);
+    const { error: uploadErr } = await supabase.storage
+      .from("documents")
+      .upload(filePath, file);
 
     if (uploadErr) {
       setError("Upload failed.");
@@ -57,15 +63,19 @@ export default function UploadForm({
       return;
     }
 
-    const { error: insertErr } = await supabase.from("documents").insert({
-      course_id: courseId,
-      title,
-      type,
-      file_path: filePath,
-      file_size: file.size,
-      mime_type: file.type,
-      uploaded_by: userId,
-    });
+    const { data: inserted, error: insertErr } = await supabase
+      .from("documents")
+      .insert({
+        course_id: courseId,
+        title,
+        type,
+        file_path: filePath,
+        file_size: file.size,
+        mime_type: file.type,
+        uploaded_by: userId,
+      })
+      .select("id")
+      .single();
 
     if (insertErr) {
       await supabase.storage.from("documents").remove([filePath]);
@@ -75,6 +85,23 @@ export default function UploadForm({
       setError(message);
       setSubmitting(false);
       return;
+    }
+
+    // Notify enrolled users (in-app + real push notification)
+    try {
+      await fetch("/api/notify/material", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          courseId,
+          title,
+          documentId: inserted?.id,
+          courseCode: courseCode.toUpperCase(),
+        }),
+      });
+    } catch (err) {
+      console.error("Failed to send material notification:", err);
+      // We don't block the user if notification fails
     }
 
     router.push(`/courses/${courseCode.toUpperCase()}`);
@@ -90,17 +117,30 @@ export default function UploadForm({
       <CourseCombobox
         value={courseId}
         initialCode={initialCourseCode}
-        onChange={(id, code) => { setCourseId(id); setCourseCode(code); }}
+        onChange={(id, code) => {
+          setCourseId(id);
+          setCourseCode(code);
+        }}
       />
 
       <div>
         <label className="text-sm font-medium text-ink">Title</label>
-        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="2023 Past Questions" required className={inputClass} />
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="2023 Past Questions"
+          required
+          className={inputClass}
+        />
       </div>
 
       <div>
         <label className="text-sm font-medium text-ink">Type</label>
-        <select value={type} onChange={(e) => setType(e.target.value)} className={inputClass}>
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          className={inputClass}
+        >
           <option value="past-question">Past Question</option>
           <option value="notes">Notes</option>
           <option value="study-guide">Study Guide</option>
@@ -120,7 +160,11 @@ export default function UploadForm({
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 
-      <button type="submit" disabled={submitting} className="w-full bg-primary text-white font-medium py-2 rounded-lg disabled:opacity-50">
+      <button
+        type="submit"
+        disabled={submitting}
+        className="w-full bg-primary text-white font-medium py-2 rounded-lg disabled:opacity-50"
+      >
         {submitting ? "Uploading…" : "Upload"}
       </button>
     </form>
