@@ -1,10 +1,16 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { sendPushToUsers } from "@/lib/send-push";
 
 export async function POST(request: Request) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -17,6 +23,7 @@ export async function POST(request: Request) {
   }
 
   const { title, body } = await request.json();
+
   if (!title?.trim()) {
     return NextResponse.json({ error: "Title is required." }, { status: 400 });
   }
@@ -30,6 +37,7 @@ export async function POST(request: Request) {
   }
 
   const broadcastId = crypto.randomUUID();
+
   const rows = allUsers.map((p) => ({
     user_id: p.id,
     course_id: null,
@@ -44,6 +52,7 @@ export async function POST(request: Request) {
   for (let i = 0; i < rows.length; i += batchSize) {
     const batch = rows.slice(i, i + batchSize);
     const { error } = await supabase.from("notifications").insert(batch);
+
     if (error) {
       console.error("News insert error:", error);
       return NextResponse.json(
@@ -53,5 +62,18 @@ export async function POST(request: Request) {
     }
   }
 
-  return NextResponse.json({ success: true, recipients: rows.length });
+  // Send real system push notifications
+  await sendPushToUsers(
+    allUsers.map((u) => u.id),
+    {
+      title: title.trim(),
+      body: body?.trim() || "New announcement from CourseBin",
+      url: "/",
+    }
+  );
+
+  return NextResponse.json({
+    success: true,
+    recipients: rows.length,
+  });
 }
