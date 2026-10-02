@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -37,39 +36,15 @@ export default function NewsForm({ onDone }: { onDone?: () => void }) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="text-sm font-medium text-ink">Title</label>
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-          className="w-full border border-border rounded-lg px-3 py-2 mt-1 bg-card text-ink"
-          placeholder="Platform maintenance this weekend"
-        />
+        <input value={title} onChange={(e) => setTitle(e.target.value)} required className="w-full border border-border rounded-lg px-3 py-2 mt-1 bg-card text-ink" placeholder="Platform maintenance this weekend" />
       </div>
-
       <div>
         <label className="text-sm font-medium text-ink">Message (optional)</label>
-        <textarea
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          rows={4}
-          className="w-full border border-border rounded-lg px-3 py-2 mt-1 bg-card text-ink"
-          placeholder="Details every user should see…"
-        />
+        <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={4} className="w-full border border-border rounded-lg px-3 py-2 mt-1 bg-card text-ink" placeholder="Details every user should see…" />
       </div>
-
       {error && <p className="text-sm text-red-600">{error}</p>}
-
-      <p className="text-xs text-muted">
-        This sends a notification to every registered user.
-      </p>
-
-      <button
-        type="submit"
-        disabled={submitting}
-        className="w-full mt-2 bg-primary text-primary-foreground font-medium py-2.5 rounded-lg
-                   hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed
-                   transition-colors"
-      >
+      <p className="text-xs text-muted">This sends a notification to every registered user.</p>
+      <button type="submit" disabled={submitting} className="w-full bg-primary text-white font-medium py-2 rounded-lg disabled:opacity-50">
         {submitting ? "Broadcasting…" : "Broadcast to all users"}
       </button>
     </form>
