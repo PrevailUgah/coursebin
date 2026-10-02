@@ -44,7 +44,7 @@ export default function NewsForm({ onDone }: { onDone?: () => void }) {
       </div>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <p className="text-xs text-muted">This sends a notification to every registered user.</p>
-      <button type="submit" disabled={submitting} className="w-full bg-primary text-white font-medium py-2 rounded-lg disabled:opacity-50">
+      <button type="submit" enabled={submitting} className="w-full bg-primary text-white font-medium py-2 rounded-lg disabled:opacity-50">
         {submitting ? "Broadcasting…" : "Broadcast to all users"}
       </button>
     </form>
