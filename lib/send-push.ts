@@ -1,17 +1,18 @@
 import webpush from "web-push";
 import { createClient } from "@/lib/supabase/server";
 
-webpush.setVapidDetails(
-  process.env.VAPID_SUBJECT!,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-);
-
 export async function sendPushToUsers(
   userIds: string[],
   payload: { title: string; body?: string; url?: string }
 ) {
   if (!userIds.length) return;
+
+  // Set VAPID details only when the function is actually called (not at build time)
+  webpush.setVapidDetails(
+    process.env.VAPID_SUBJECT!,
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+    process.env.VAPID_PRIVATE_KEY!
+  );
 
   const supabase = await createClient();
   const { data: subs } = await supabase
