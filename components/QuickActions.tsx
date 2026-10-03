@@ -2,13 +2,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { BookOpen, Upload, Search, FileStack, Megaphone, Shield } from "lucide-react";
-import { useAuth, signInWithGoogle } from "@/lib/auth-client";
+import { useAuth } from "@/lib/auth-client";
 import Modal from "@/components/Modal";
 import NewsForm from "@/components/NewsForm";
 import MyCoursesQuickAction from "@/components/MyCoursesQuickAction";
 
 export default function QuickActions() {
-  const { signedIn, isAdmin, isSeniorAdmin } = useAuth();
+  const { isAdmin, isSeniorAdmin } = useAuth();
   const [newsOpen, setNewsOpen] = useState(false);
   const tileClass = "bg-card border border-border rounded-xl p-4 flex flex-col items-center gap-2 text-center hover:border-primary transition-colors w-full";
   const iconWrap = "w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center";
@@ -39,17 +39,11 @@ export default function QuickActions() {
 
         <MyCoursesQuickAction />
 
-        {signedIn ? (
+        {isAdmin && (
           <Link href="/my-uploads" className={tileClass}>
             <div className={iconWrap}><FileStack className="w-5 h-5 text-primary" /></div>
             <span className="text-sm font-medium text-ink">My Uploads</span>
           </Link>
-        ) : (
-          <button onClick={signInWithGoogle} className={tileClass}>
-            <div className={iconWrap}><FileStack className="w-5 h-5 text-primary" /></div>
-            <span className="text-sm font-medium text-ink">My Uploads</span>
-            <span className="text-[11px] text-muted -mt-1">Sign in required</span>
-          </button>
         )}
 
         {isSeniorAdmin && (
