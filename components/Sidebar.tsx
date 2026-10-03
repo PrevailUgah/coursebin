@@ -8,7 +8,7 @@ type NavItem = { href: string; label: string; icon: React.ComponentType<{ classN
 
 export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean | null; onToggle: () => void }) {
   const pathname = usePathname();
-  const { signedIn, isSeniorAdmin } = useAuth();
+  const { signedIn, isAdmin, isSeniorAdmin } = useAuth();
 
   const widthClass = collapsed === null ? "w-16 lg:w-60" : collapsed ? "w-16" : "w-60";
   const labelClass = collapsed === null ? "hidden lg:inline" : collapsed ? "hidden" : "inline";
@@ -20,9 +20,11 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean | 
     { href: "/", label: "Dashboard", icon: LayoutDashboard, requiresAuth: false, active: pathname === "/" },
     { href: "/browse", label: "Browse", icon: BookOpen, requiresAuth: false, active: pathname.startsWith("/browse") },
     { href: "/enrolled-courses", label: "My Courses", icon: ListChecks, requiresAuth: true, active: pathname.startsWith("/enrolled-courses") },
-    { href: "/upload", label: "Upload", icon: Upload, requiresAuth: true, active: pathname.startsWith("/upload") },
-    { href: "/my-uploads", label: "My Uploads", icon: FileStack, requiresAuth: true, active: pathname.startsWith("/my-uploads") },
   ];
+  if (isAdmin) {
+    items.push({ href: "/upload", label: "Upload", icon: Upload, requiresAuth: true, active: pathname.startsWith("/upload") });
+  }
+  items.push({ href: "/my-uploads", label: "My Uploads", icon: FileStack, requiresAuth: true, active: pathname.startsWith("/my-uploads") });
   if (isSeniorAdmin) {
     items.push({ href: "/admin/faculties", label: "Admin", icon: Shield, requiresAuth: false, active: pathname.startsWith("/admin") });
   }

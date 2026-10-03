@@ -8,7 +8,7 @@ import NewsForm from "@/components/NewsForm";
 import MyCoursesQuickAction from "@/components/MyCoursesQuickAction";
 
 export default function QuickActions() {
-  const { signedIn, isSeniorAdmin } = useAuth();
+  const { signedIn, isAdmin, isSeniorAdmin } = useAuth();
   const [newsOpen, setNewsOpen] = useState(false);
   const tileClass = "bg-card border border-border rounded-xl p-4 flex flex-col items-center gap-2 text-center hover:border-primary transition-colors w-full";
   const iconWrap = "w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center";
@@ -25,17 +25,11 @@ export default function QuickActions() {
           <span className="text-sm font-medium text-ink">Browse Courses</span>
         </Link>
 
-        {signedIn ? (
+        {isAdmin && (
           <Link href="/upload" className={tileClass}>
             <div className={iconWrap}><Upload className="w-5 h-5 text-primary" /></div>
-            <span className="text-sm font-medium text-ink">Upload</span>
+            <span className="text-sm font-medium text-ink">Upload Material</span>
           </Link>
-        ) : (
-          <button onClick={signInWithGoogle} className={tileClass}>
-            <div className={iconWrap}><Upload className="w-5 h-5 text-primary" /></div>
-            <span className="text-sm font-medium text-ink">Upload</span>
-            <span className="text-[11px] text-muted -mt-1">Sign in required</span>
-          </button>
         )}
 
         <button onClick={openSearch} className={tileClass}>

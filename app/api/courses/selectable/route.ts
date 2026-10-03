@@ -8,20 +8,11 @@ export async function GET() {
 
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
   const role = profile?.role ?? "student";
-  const isAdmin = role === "junior_admin" || role === "senior_admin";
-
-  if (isAdmin) {
-    const { data, error } = await supabase.from("courses").select("id, code, title, level, semester").order("code");
-    if (error) return NextResponse.json({ error: "Could not load courses." }, { status: 500 });
-    return NextResponse.json(data ?? []);
+  if (role !== "junior_admin" && role !== "senior_admin") {
+    return NextResponse.json({ error: "Only admins can upload materials." }, { status: 403 });
   }
 
-  const { data, error } = await supabase
-    .from("enrollments")
-    .select("courses(id, code, title, level, semester)")
-    .eq("user_id", user.id);
-  if (error) return NextResponse.json({ error: "Could not load your courses." }, { status: 500 });
-
-  const courses = (data ?? []).map((row: any) => row.courses).filter(Boolean);
-  return NextResponse.json(courses);
+  const { data, error } = await supabase.from("courses").select("id, code, title, level, semester").order("code");
+  if (error) return NextResponse.json({ error: "Could not load courses." }, { status: 500 });
+  return NextResponse.json(data ?? []);
 }
