@@ -35,7 +35,7 @@ export default async function Home() {
           <SearchBar faculties={faculties} />
         </div>
 
-        <TrendingCarousel posts={trendingPosts} />
+
 
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8 min-w-0">
@@ -43,7 +43,7 @@ export default async function Home() {
               <h2 className="text-sm font-semibold text-muted uppercase mb-3">Quick Actions</h2>
               <QuickActions />
             </section>
-
+        <TrendingCarousel posts={trendingPosts} />
             <section>
               <h2 className="text-lg font-bold text-ink mb-4">Popular Courses</h2>
               <div className="grid sm:grid-cols-2 2xl:grid-cols-3 gap-4">
