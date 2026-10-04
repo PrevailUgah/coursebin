@@ -29,7 +29,8 @@ export default function TrendingForm({ userId, onDone }: { userId: string; onDon
 
     const { error: uploadErr } = await supabase.storage.from("trending-media").upload(mediaPath, file);
     if (uploadErr) {
-      setError("Upload failed.");
+      console.error("trending upload failed:", uploadErr);
+      setError(`Upload failed: ${uploadErr.message}`);
       setSubmitting(false);
       return;
     }
@@ -39,8 +40,9 @@ export default function TrendingForm({ userId, onDone }: { userId: string; onDon
     });
 
     if (insertErr) {
+      console.error("trending insert failed:", insertErr);
       await supabase.storage.from("trending-media").remove([mediaPath]);
-      setError("Could not save the post.");
+      setError(`Could not save the post: ${insertErr.message}`);
       setSubmitting(false);
       return;
     }
