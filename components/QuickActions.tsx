@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { BookOpen, Upload, Search, FileStack, Megaphone, Shield } from "lucide-react";
+import { BookOpen, Upload, Search, FileStack, Megaphone, Shield, MessageCircle } from "lucide-react";
 import { useAuth } from "@/lib/auth-client";
 import Modal from "@/components/Modal";
 import NewsForm from "@/components/NewsForm";
@@ -59,6 +59,17 @@ export default function QuickActions() {
             <span className="text-sm font-medium text-ink">News Update</span>
           </button>
         )}
+
+        <div
+          aria-disabled="true"
+          className="relative bg-card border border-border rounded-xl p-4 flex flex-col items-center gap-2 text-center w-full opacity-70 cursor-not-allowed select-none"
+        >
+          <span className="absolute -top-2 -right-2 bg-amber-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full rotate-6 shadow-sm whitespace-nowrap">
+            Coming Soon
+          </span>
+          <div className={iconWrap}><MessageCircle className="w-5 h-5 text-primary" /></div>
+          <span className="text-sm font-medium text-ink">Feedback</span>
+        </div>
       </div>
 
       <Modal open={newsOpen} onClose={() => setNewsOpen(false)} title="Broadcast a news update">
