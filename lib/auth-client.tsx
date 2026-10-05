@@ -56,10 +56,10 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-export function signInWithGoogle() {
+export function signInWithGoogle(redirectTo?: string) {
   const supabase = createClient();
   supabase.auth.signInWithOAuth({
     provider: "google",
-    options: { redirectTo: `${window.location.origin}/auth/callback` },
+    options: { redirectTo: redirectTo || `${window.location.origin}/auth/callback` },
   });
 }
