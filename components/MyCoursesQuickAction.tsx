@@ -39,7 +39,7 @@ export default function MyCoursesQuickAction() {
 
   if (!signedIn) {
     return (
-      <button onClick={signInWithGoogle} className={tileClass}>
+      <button onClick={() => signInWithGoogle()} className={tileClass}>
         <div className={iconWrap}><ListChecks className="w-5 h-5 text-primary" /></div>
         <span className="text-sm font-medium text-ink">My Courses</span>
         <span className="text-[11px] text-muted -mt-1">Sign in required</span>

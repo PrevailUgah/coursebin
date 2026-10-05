@@ -42,7 +42,7 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean | 
       <nav aria-label="Primary" className="flex-1 p-2 space-y-1 overflow-y-auto">
         {items.map(({ href, label, icon: Icon, requiresAuth, active }) =>
           requiresAuth && !signedIn ? (
-            <button key={href} onClick={signInWithGoogle} title={label} className={itemClass(false)}>
+            <button key={href} onClick={() => signInWithGoogle()} title={label} className={itemClass(false)}>
               <Icon className="w-5 h-5 shrink-0" /><span className={labelClass}>{label}</span>
             </button>
           ) : (

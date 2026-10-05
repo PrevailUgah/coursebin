@@ -33,7 +33,7 @@ export default function BottomNav() {
           Account
         </Link>
       ) : (
-        <button onClick={signInWithGoogle} className={itemClass(false)}>
+        <button onClick={() => signInWithGoogle()} className={itemClass(false)}>
           <LogIn className="w-5 h-5" />
           Sign in
         </button>
