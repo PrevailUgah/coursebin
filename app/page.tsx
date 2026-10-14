@@ -7,6 +7,7 @@ import { timeAgo } from "@/lib/utils";
 import SearchBar from "@/components/SearchBar";
 import QuickActions from "@/components/QuickActions";
 import HeroMarquee from "@/components/HeroMarquee";
+import Footer from "@/components/Footer"
 // import EdgeLight from "@/components/EdgeLight";
 import TrendingCarousel from "@/components/TrendingCarousel";
 import { Code2, LineChart, GitBranch, FileText } from "lucide-react";
@@ -43,7 +44,7 @@ export default async function Home() {
               <h2 className="text-sm font-semibold text-muted uppercase mb-3">Quick Actions</h2>
               <QuickActions />
             </section>
-        <TrendingCarousel posts={trendingPosts} />
+            <TrendingCarousel posts={trendingPosts} />
             <section>
               <h2 className="text-lg font-bold text-ink mb-4">Popular Courses</h2>
               <div className="grid sm:grid-cols-2 2xl:grid-cols-3 gap-4">
@@ -91,8 +92,9 @@ export default async function Home() {
             </div>
           </aside>
         </div>
+        <Footer />
 
-        <div className="mt-16 mb-4 border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+        {/* <div className="mt-16 mb-4 border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
           <p className="text-sm text-muted text-center sm:text-left">
             Made for <span className="text-red-500">growth🚀</span> by <span className="font-semibold text-ink">Dev Prevail Ugah</span>
           </p>
@@ -100,7 +102,7 @@ export default async function Home() {
             <Image src="/mugina-logo.jpg" alt="MU GINA Community Logo" width={72} height={72} className="rounded-xl shadow-sm" />
             <p className="text-xs font-semibold text-muted tracking-wide uppercase">MU GINA Community</p>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
